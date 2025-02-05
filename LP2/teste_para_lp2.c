@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
+#include <string.h>
 #define NUM_LETRAS 26
 #define ASCII_A 65
 #define TAMANHO_SENHA 4
@@ -9,6 +10,7 @@ const int COPRIMES[4] = {3, 5, 7, 11};
 const int SHIFTS[4] = {7, 11, 13, 17};
 
 char* LeArquivo();
+void Descriptografa(char senhas[]);
 
 // Função de criptografia fornecida pelo professor
 char* encrypt(const char* str) {
@@ -69,11 +71,32 @@ char* LeArquivo(char arquivo[]){
 
     // Lê o conteúdo de dentro do arquivo e imprime na tela
     while(fgets(senhas, 30, fsenhas)!=NULL){
-		printf("%s", senhas);
+		//printf("%s", senhas);
 		// Colocar uma lógica para que ele retorne uma string já criptografada
 		// Ou colocar uma lógica para ele retornar as strings
 	}
-
+	Descriptografa(senhas);
     fclose(fsenhas);
     puts("\n");
+}
+
+void Descriptografa(char senhas[]){
+    char senha[5];
+    char senhas_novas[sizeof(senhas)];
+    for(int i=0; senhas[i]!='\0'; i++){
+        if(senhas[i]==0x0A){
+            printf("encontrei");
+        }
+    }
+    for(int i=0, j=0; senhas[i]!='\0'; i++, j++){
+        if(senhas[i]!='\n'){
+            senha[j]=senhas[i];
+        }else{
+            puts(senha);
+            puts("criptografou");
+            *senhas_novas = encrypt(senha);
+            j=0;
+        }
+    }
+    //puts(senha);
 }
