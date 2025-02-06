@@ -91,20 +91,19 @@ char* LeArquivo(char arquivo[]){
 
 void Descriptografa(char senhas[]){
     char senha[5] = "";
-    char senhas_novas[sizeof(senhas)+1] = "";
+    char senhas_novas[500] = "";
 
     for(int i=0, j=0; senhas[i] != '\0'; i++){
         if(senhas[i] != '\n'){
             senha[j] = senhas[i];
             j++;
         }else{
-            printf("\nCriptografou: %s\n", senha);
+            printf("\nCriptografando: %s\n", senha);
             strcat(senhas_novas, encrypt(senha));
-
+            strcat(senhas_novas, " ");
             strcpy(senha, "");
-            printf("Senha criptografada: %s", senhas_novas);
+            printf("Resultado: %s\n", senhas_novas);
             j=0;
         }
     }
-    puts(senhas_novas);
 }
