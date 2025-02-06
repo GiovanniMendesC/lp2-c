@@ -65,7 +65,7 @@ return 0;
 
 
 char* LeArquivo(char arquivo[]){
-    char senhas[500] = "";
+    char senhas[80] = "";
     char temp[50] = "";
 
     // Abre o arquivo e verifica se ele existe/deu problema
@@ -91,7 +91,7 @@ char* LeArquivo(char arquivo[]){
 
 void Descriptografa(char senhas[]){
     char senha[5] = "";
-    char senhas_novas[500] = "";
+    char senhas_novas[80] = "";
 
     for(int i=0, j=0; senhas[i] != '\0'; i++){
         if(senhas[i] != '\n'){
