@@ -14,9 +14,9 @@ char* LeArquivo();
 void Descriptografa(char senhas[]);
 
 // Função de criptografia fornecida pelo professor
-char* encrypt(const char* str) {
-    // Aloca uma string dinâmica
-    char* str_result = (char*) malloc(sizeof(char) * (TAMANHO_SENHA + 1));
+char* encrypt(const char* str) { //Recebe uma string
+
+    char* str_result = (char*) malloc(sizeof(char) * (TAMANHO_SENHA + 1)); // Aloca uma string dinâmica
 
     // Verifica se a alocação deu certo
     if (!str_result) {
@@ -33,8 +33,9 @@ char* encrypt(const char* str) {
             str_result[i] = val + ASCII_A;
         } else {
 
-            printf("\nCaractere: '%d'", str_result[i]);
             // Informa se o processo de criptografia deu errado
+            // e o caractere que deu erro
+            printf("\nCaractere: '%d'\n", str_result[i]);
             perror("Erro: String contém caracteres inválidos.");
             free(str_result);
             exit(EXIT_FAILURE);
@@ -51,10 +52,10 @@ int main(){
                       "007.txt", "008.txt", "009.txt",
                       "010.txt"};
 
-  //colcando para português
-    setlocale(LC_ALL, "portuguese");
 
-    // Envia os arquivos para serem lidos na função e retornarem para uma nova string, já criptografados
+    setlocale(LC_ALL, "portuguese"); //colcando para português
+
+    // Envia os arquivos para serem lidos e criptografados
     for(int i=0; i<10; i++){
         LeArquivo(arquivo[i]);
     }
@@ -76,35 +77,33 @@ char* LeArquivo(char arquivo[]){
     // Lê o conteúdo de dentro do arquivo e imprime na tela
     while(fgets(temp, 30, fsenhas)!=NULL){
 		strcat(senhas, temp);
-		//puts(temp);
-		// Colocar uma lógica para que ele retorne uma string já criptografada
-		// Ou colocar uma lógica para ele retornar as strings
 	}
+
 	printf("Senhas do arquivo: %s \n", arquivo);
     puts(senhas);
-	Descriptografa(senhas);
+
+	Descriptografa(senhas); // Chama a função para criptografar
     strcpy(senhas, "");
-    fclose(fsenhas);
+
+    fclose(fsenhas); // Fecha o arquivo
     puts("\n");
 }
 
 void Descriptografa(char senhas[]){
     char senha[5] = "";
-    char senhas_novas[sizeof(senhas)] = "";
-    int j=0;
+    char senhas_novas[sizeof(senhas)+1] = "";
 
-    for(int i=0; senhas[i]!='\0'; i++){
-        if (senhas[i] != '\n') {
-            if (j < sizeof(senha) - 1) { // Evitar estouro
-                senha[j++] = senhas[i];
-                senha[j] = '\0'; // Garantir que sempre esteja terminada
-            }
-        }else {
-            puts("criptografou");
-            strcat(senhas_novas, encrypt(senha)); // Concatenar versão criptografada
-            strcat(senhas_novas, "\n"); // Adicionar quebra de linha
-            j = 0;
-            memset(senha, 0, sizeof(senha)); // Limpar `senha`
+    for(int i=0, j=0; senhas[i] != '\0'; i++){
+        if(senhas[i] != '\n'){
+            senha[j] = senhas[i];
+            j++;
+        }else{
+            printf("\nCriptografou: %s\n", senha);
+            strcat(senhas_novas, encrypt(senha));
+
+            strcpy(senha, "");
+            printf("Senha criptografada: %s", senhas_novas);
+            j=0;
         }
     }
     puts(senhas_novas);
