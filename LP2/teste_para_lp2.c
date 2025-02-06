@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <locale.h>
 #include <string.h>
+
 #define NUM_LETRAS 26
 #define ASCII_A 65
 #define TAMANHO_SENHA 4
@@ -31,6 +32,8 @@ char* encrypt(const char* str) {
             val = (val * COPRIMES[i] + SHIFTS[i]) % NUM_LETRAS;
             str_result[i] = val + ASCII_A;
         } else {
+
+            printf("\nCaractere: '%d'", str_result[i]);
             // Informa se o processo de criptografia deu errado
             perror("Erro: String contém caracteres inválidos.");
             free(str_result);
@@ -61,7 +64,8 @@ return 0;
 
 
 char* LeArquivo(char arquivo[]){
-    char senhas[50];
+    char senhas[500] = "";
+    char temp[50] = "";
 
     // Abre o arquivo e verifica se ele existe/deu problema
     FILE *fsenhas;
@@ -70,33 +74,38 @@ char* LeArquivo(char arquivo[]){
         printf("problemas ao abrir o aquivo %s!", arquivo);
 
     // Lê o conteúdo de dentro do arquivo e imprime na tela
-    while(fgets(senhas, 30, fsenhas)!=NULL){
-		//printf("%s", senhas);
+    while(fgets(temp, 30, fsenhas)!=NULL){
+		strcat(senhas, temp);
+		//puts(temp);
 		// Colocar uma lógica para que ele retorne uma string já criptografada
 		// Ou colocar uma lógica para ele retornar as strings
 	}
+	printf("Senhas do arquivo: %s \n", arquivo);
+    puts(senhas);
 	Descriptografa(senhas);
+    strcpy(senhas, "");
     fclose(fsenhas);
     puts("\n");
 }
 
 void Descriptografa(char senhas[]){
-    char senha[5];
-    char senhas_novas[sizeof(senhas)];
+    char senha[5] = "";
+    char senhas_novas[sizeof(senhas)] = "";
+    int j=0;
+
     for(int i=0; senhas[i]!='\0'; i++){
-        if(senhas[i]==0x0A){
-            printf("encontrei");
-        }
-    }
-    for(int i=0, j=0; senhas[i]!='\0'; i++, j++){
-        if(senhas[i]!='\n'){
-            senha[j]=senhas[i];
-        }else{
-            puts(senha);
+        if (senhas[i] != '\n') {
+            if (j < sizeof(senha) - 1) { // Evitar estouro
+                senha[j++] = senhas[i];
+                senha[j] = '\0'; // Garantir que sempre esteja terminada
+            }
+        }else {
             puts("criptografou");
-            *senhas_novas = encrypt(senha);
-            j=0;
+            strcat(senhas_novas, encrypt(senha)); // Concatenar versão criptografada
+            strcat(senhas_novas, "\n"); // Adicionar quebra de linha
+            j = 0;
+            memset(senha, 0, sizeof(senha)); // Limpar `senha`
         }
     }
-    //puts(senha);
+    puts(senhas_novas);
 }
