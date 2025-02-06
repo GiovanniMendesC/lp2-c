@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <locale.h>
 #include <string.h>
+#include <windows.h>
+#include <time.h>
 
 #define NUM_LETRAS 26
 #define ASCII_A 65
@@ -51,16 +53,60 @@ int main(){
                       "004.txt", "005.txt", "006.txt",
                       "007.txt", "008.txt", "009.txt",
                       "010.txt"};
+    int num_de_arquivos = sizeof(arquivo) / sizeof(arquivo[0]);
 
+    clock_t inicio, fim;
+    double tempo_total;
 
     setlocale(LC_ALL, "portuguese"); //colcando para português
 
+    HANDLE processos[num_de_arquivos];
+    DWORD ids_processos[num_de_arquivos];
+    DWORD status_processos[num_de_arquivos];
+
+    inicio = clock();
+
+
     // Envia os arquivos para serem lidos e criptografados
-    for(int i=0; i<10; i++){
-        LeArquivo(arquivo[i]);
+    for(int i=0; i<num_de_arquivos; i++){
+        processos[i] = CreateThread(
+            NULL,
+            0,
+            LeArquivo,
+            arquivo[i],
+            0,
+            &ids_processos[i]
+        );
+
+        if(processos[i] == NULL){
+            printf("Erro ao criar processo para o arquivo %s\n", arquivo[i]);
+            status_processos[i]=1;
+        }
     }
 
-return 0;
+    for (int i = 0; i < num_de_arquivos; i++) {
+            if (processos[i] != NULL) {
+                WaitForSingleObject(processos[i], INFINITE);
+                GetExitCodeThread(processos[i], &status_processos[i]);
+                CloseHandle(processos[i]);
+            }
+    }
+
+    fim = clock();
+    tempo_total = (double)(fim-inicio) / CLOCKS_PER_SEC;
+
+    // Exibe os resultados
+    printf("\nResultados:\n");
+
+    for (int i = 0; i < num_de_arquivos; i++) {
+        printf("Arquivo: %s, Status: %s\n",
+               arquivo[i],
+               status_processos[i] == 0 ? "Sucesso" : "Falha");
+    }
+
+    printf("Tempo total de execução: %.2f segundos\n", tempo_total);
+
+    return 0;
 }
 
 
